@@ -5,18 +5,14 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        File file = new File("basket.bin");
         Scanner scanner = new Scanner(System.in);
-        String[] goods = new String[0];
-        int[] basketCount = new int[goods.length];
-        goods = new String[]{"Хлеб", "Масло", "Молоко"};
+        String[] goods = {"Хлеб", "Масло", "Молоко"};
         int[] prices = {50, 150, 100};
-        File file = new File("basket.txt");
-        Basket basket = null;
-        if (file.exists()) {
-            basket = Basket.loadFromTxtFile(file);
-        } else {
-            basket = new Basket(goods, prices, basketCount);
-        }
+
+        Basket basket = new Basket(goods, prices);
+
+
         System.out.println("Список товаров: ");
         for (int i = 0; i < goods.length; i++) {
             System.out.println((i + 1) + ". " + goods[i] + " " + prices[i] + " руб/шт.");
@@ -39,8 +35,21 @@ public class Main {
             basket.addToCart(productNum, count);
 
         }
-        basket.saveTxt(file);
+
+
+        try {
+            basket.saveBin(file);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         basket.printCart();
+
+        try {
+            basket = Basket.loadFromBinFile(file);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 }
 

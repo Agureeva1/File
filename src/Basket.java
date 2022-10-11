@@ -2,17 +2,18 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Basket {
+public class Basket implements Serializable {
     private String[] goods;
     private int[] prices;
     private int[] basketCount;
     int sum = 0;
 
-    public Basket(String[] goods, int[] prices, int[] basketCount) {
+    public Basket(String[] goods, int[] prices) {
         this.goods = goods;
         this.prices = prices;
         this.basketCount = new int[goods.length];
     }
+
 
     public void addToCart(int productNum, int amount) {
         basketCount[productNum] += amount;
@@ -29,35 +30,21 @@ public class Basket {
         System.out.println("Итого: " + sum + " руб. ");
     }
 
-    public void saveTxt(File textFile) throws FileNotFoundException {
-        try (PrintWriter out = new PrintWriter(textFile)) {
-            for (String product : goods) {
-                out.print(product + " ");
-
-            }
-            out.println();
-            for (int price : prices) {
-                out.print(price + " ");
-            }
-            out.println();
-            for (int count : basketCount) {
-                out.print(count + " ");
-            }
-            out.println();
+    public void saveBin(File textFile) throws Exception {
+        try
+                (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(textFile))) {
+            out.writeObject(this);
         }
     }
 
-    public static Basket loadFromTxtFile(File textFile) throws IOException {
-        try (Scanner scanner = new Scanner(new FileInputStream(textFile))) {
-            String[] goods = scanner.nextLine().split(" ");
-            int[] prices = Arrays.stream(scanner.nextLine().split(" "))
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
-            int[] basket = Arrays.stream(scanner.nextLine().split(" "))
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
-            return new Basket(goods, prices, basket);
+    public static Basket loadFromBinFile(File textFile) throws Exception {
+        try
+                (ObjectInputStream in = new ObjectInputStream(new FileInputStream(textFile))) {
+            Basket basket = (Basket) in.readObject();
+            return basket;
         }
     }
-
 }
+
+
+
