@@ -1,11 +1,15 @@
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Basket {
-    private String[] goods;
-    private int[] prices;
-    private int[] basketCount;
+    public String[] goods;
+    public int[] prices;
+    public int[] basketCount;
     int sum = 0;
 
     public Basket(String[] goods, int[] prices, int[] basketCount) {
@@ -13,6 +17,7 @@ public class Basket {
         this.prices = prices;
         this.basketCount = new int[goods.length];
     }
+
 
     public void addToCart(int productNum, int amount) {
         basketCount[productNum] += amount;
@@ -59,5 +64,13 @@ public class Basket {
             return new Basket(goods, prices, basket);
         }
     }
+
+
+    public static Basket loadJSON(String nameFile) throws FileNotFoundException {
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new FileReader(nameFile));
+        return gson.fromJson(reader, Basket.class);
+    }
+
 
 }
